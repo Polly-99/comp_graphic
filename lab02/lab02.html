@@ -1,0 +1,46 @@
+<HTML>
+<BODY>
+<canvas id = 'lab02' width = '100' height = '100'> </canvas>
+<script>
+	var canvas = document.getElementById("lab02");
+	var ctx = canvas.getContext("2d");
+
+	var img = new Image();
+	img.src = "img.jpg"; 
+	img.onload = function(){
+		ctx.drawImage (img, 0, 0, 100, 100);	
+	}
+
+	canvas.addEventListener('click', function (event){
+		for (var x = 0; x < 100; x += 1) {
+			for (var y = 0; y < 100; y += 1){
+				var imgData = ctx.getImageData (x, y, 3, 3);
+
+				var r = 0, g = 0, b = 0, a = 0;
+				for(var z = 0, len = imgData.data.length; z < len; z += 4)
+    				{
+       					r += imgData.data[z];
+					g += imgData.data[z + 1];
+					b += imgData.data[z + 2];
+					a += imgData.data[z + 3];
+				}	
+				imgData.data[16] = r / 9;
+				imgData.data[17] = g / 9;
+				imgData.data[18] = b / 9;
+				imgData.data[19] = a / 9;
+				ctx.putImageData(imgData, x, y);
+			}
+		}
+	});	
+
+	var link = document.createElement("a");
+	link.innerHTML = 'save image';
+	link.addEventListener('click',function (event) {
+		link.href = canvas.toDataURL();
+		link.download = "canvas.png";
+	}, false)
+	document.body.appendChild(link);
+
+</script>
+</BODY>
+</HTML>
