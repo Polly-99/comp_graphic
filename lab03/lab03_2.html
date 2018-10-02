@@ -1,0 +1,52 @@
+//зажать кнопку мыши - центр окружности, отпустить - радиус
+
+<HTLM>
+<BODY style = "margin: 0">
+<canvas id = 'lab03_2', width = '500', height = '500'> </canvas>
+<script>
+
+var canvas = document.getElementById("lab03_2");
+var ctx = canvas.getContext("2d");
+
+var rx = 0, ry = 0, x1 = 0, y1 = 0;
+
+canvas.addEventListener('mousedown', function (event){
+	x1 = event.clientX;
+	y1 = event.clientY;
+})
+
+
+canvas.addEventListener('mouseup', function (event){
+	rx = event.clientX;
+	ry = event.clientY;
+	var R = Math.sqrt( Math.pow((rx - x1),2) + Math.pow((ry - y1),2) );
+	var  x = 0, y = R, delta = 1 - 2 * R, Z = 0;
+	while (x < y){
+		ctx.fillRect(x1 + x, y1 + y, 1, 1);
+		ctx.fillRect(x1 + x, y1 - y, 1, 1);
+		ctx.fillRect(x1 - x, y1 + y, 1, 1);
+		ctx.fillRect(x1 - x, y1 - y, 1, 1);
+		ctx.fillRect(x1 + y, y1 + x, 1, 1);
+		ctx.fillRect(x1 + y, y1 - x, 1, 1);
+		ctx.fillRect(x1 - y, y1 + x, 1, 1);
+		ctx.fillRect(x1 - y, y1 - x, 1, 1);
+		if (Z>0) { 
+			y--; 
+			Z -= 2*y; 
+ 		}
+    		x++; 
+		Z += 2* x; 
+	}
+})
+
+var link = document.createElement("a");
+	link.innerHTML = 'save image';
+	link.addEventListener('click',function (event) {
+		link.href = canvas.toDataURL();
+		link.download = "circle.png";
+	}, false)
+document.body.appendChild(link);
+
+</script>
+</BODY>
+</HTML>
