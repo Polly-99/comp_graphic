@@ -1,0 +1,62 @@
+<HTML>
+<BODY style = "margin: 0">
+<canvas id = 'lab08' width = '300' height = '300'> </canvas>
+<script>
+	var canvas = document.getElementById("lab08");
+	var ctx = canvas.getContext("2d");
+	var xb = 0; yb = 0, xe = 0, ye = 0, x = [], y = [], j = 0, z = 0;
+
+	canvas.addEventListener('click', function (event){
+		x.push(event.clientX);
+		y.push(event.clientY);
+		j ++;
+		if (j == 3){
+			for (t = 0; t < 1; t = t + 0.05){
+    				xb = Math.pow((1 - t), 2) * x[0] + 2 * (1 - t) * t * x[1] + Math.pow(t, 2) * x[2];
+    				yb =  Math.pow((1 - t), 2) * y[0] + 2 * (1 - t) * t * y[1] + Math.pow(t, 2) * y[2];
+				z = t + 0.05;
+				xe = Math.pow((1 - z), 2) * x[0] + 2 * (1 - z) * z * x[1] + Math.pow(z, 2) * x[2];
+    				ye =  Math.pow((1 - z), 2) * y[0] + 2 * (1 - z) * z * y[1] + Math.pow(z, 2) * y[2];
+				ctx.beginPath(); 
+				ctx.moveTo(xb, yb);
+				ctx.lineTo(xe, ye);
+				ctx.stroke();
+				
+				//povorot na 30
+				ctx.beginPath(); 
+				ctx.moveTo(xb * Math.cos(Math.PI / 6) - yb * Math.sin(Math.PI / 6),
+				xb * Math.sin(Math.PI / 6) + yb * Math.cos(Math.PI / 6));
+				ctx.lineTo(xe * Math.cos(Math.PI / 6) - ye * Math.sin(Math.PI / 6),
+				xe * Math.sin(Math.PI / 6) + ye * Math.cos(Math.PI / 6));;
+				ctx.stroke();
+
+				//sdvig
+				ctx.beginPath(); 
+				ctx.moveTo(xb + 70, yb + 100);
+				ctx.lineTo(xe + 70, ye + 100);
+				ctx.stroke();
+
+				//masshtab
+				ctx.beginPath(); 
+				ctx.moveTo(xb * 2, yb * 2);
+				ctx.lineTo(xe * 2, ye * 2);
+				ctx.stroke();
+			}
+							
+			x = [];
+			y = [];
+			j = 0;
+		}
+	});
+
+	var link = document.createElement("a");
+	link.innerHTML = 'save image';
+	link.addEventListener('click',function (event) {
+		link.href = canvas.toDataURL();
+		link.download = "canvas.png";
+	}, false)
+	document.body.appendChild(link);
+
+</script>
+</BODY>
+</HTML>
