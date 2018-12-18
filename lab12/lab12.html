@@ -1,0 +1,93 @@
+<HTML>
+<BODY style = "margin: 0">
+<canvas id = 'lab08' width = '200' height = '200'> </canvas>
+<script>
+	var canvas = document.getElementById("lab08");
+	var ctx = canvas.getContext("2d");
+	var xb = 0; yb = 0, xe = 0, ye = 0, x = [], y = [], z = [], j = 0, f = 0;
+	
+	function setPixel (x,y,c) { 
+    		var p=ctx.createImageData(1,1);
+    		p.data[0]=c.r;
+    		p.data[1]=c.g;
+    		p.data[2]=c.b;
+    		p.data[3]=c.a;
+   		ctx.putImageData(p,x,y);
+	}
+ 
+	function fill(x, y, color){ 
+		ctx.fillStyle = "#aa00aa";
+   		var startColor = ctx.getImageData(x, y, 1,1).data;
+    		var q = [[x,y]];
+    		for(var i = 0; i!= q.length; i++){
+        		var x = q[i][0], y = q[i][1];
+        		var data = ctx.getImageData(x, y, 1,1).data;
+        		if(x>=0 && y>=0 && data[0]==startColor[0] && data[1]==startColor[1] && data[2]==startColor[2] && data[3]==startColor[3]){
+         			setPixel(x,y, color);
+            			var s = q.length;
+            			q[s] = [x+1, y];
+            			q[s+1] = [x-1, y];
+            			q[s+2] = [x, y+1];
+        			q[s+3] = [x, y-1];
+        		}
+    		}
+	}
+
+	canvas.addEventListener('click', function (event){
+		x.push(event.clientX);
+		y.push(event.clientY);
+		j ++;
+		if (j == 3){
+			for (t = 0; t < 1; t = t + 0.05){
+    				xb = Math.pow((1 - t), 2) * x[0] + 2 * (1 - t) * t * x[1] + Math.pow(t, 2) * x[2];
+    				yb =  Math.pow((1 - t), 2) * y[0] + 2 * (1 - t) * t * y[1] + Math.pow(t, 2) * y[2];
+				f = t + 0.05;
+				xe = Math.pow((1 - f), 2) * x[0] + 2 * (1 - f) * f * x[1] + Math.pow(f, 2) * x[2];
+    				ye =  Math.pow((1 - f), 2) * y[0] + 2 * (1 - f) * f * y[1] + Math.pow(f, 2) * y[2];
+				ctx.beginPath(); 
+				ctx.moveTo(xb, yb);
+				ctx.lineTo(xe, ye);
+				ctx.stroke();
+				
+				//povorot na 60 otn. Oy
+				xpb = xb * Math.cos(Math.PI/3);
+				xpe = xe * Math.cos(Math.PI/3);
+				ctx.beginPath();
+				ctx.moveTo(xpb, yb);
+				ctx.lineTo(xpe, ye);
+				ctx.stroke();
+
+				ctx.beginPath();
+				ctx.moveTo(xb, yb);
+				ctx.lineTo(xpb, yb);
+				ctx.stroke();
+
+				ctx.beginPath();
+				ctx.moveTo(xe, ye);
+				ctx.lineTo(xpe, ye);
+				ctx.stroke();
+
+				yf = yb + (ye - yb)/2;
+				xf = xpb + (xe - xpb)/2;
+				if (yb > ye)
+					yf = ye + (yb - ye)/2;
+				if (xpb > xe)
+					xf = xe + (xpb - xe)/2;
+				fill(xf, yf, {r:200, g:100, b:200, a:255});
+			}
+							
+			x = [];
+			y = [];
+			j = 0;
+		}
+	});
+	var link = document.createElement("a");
+	link.innerHTML = 'save image';
+	link.addEventListener('click',function (event) {
+		link.href = canvas.toDataURL();
+		link.download = "canvas.png";
+	}, false)
+	document.body.appendChild(link);
+</script>
+</BODY>
+</HTML>
